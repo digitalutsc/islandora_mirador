@@ -1,3 +1,7 @@
 .block-mirador {
   height: 500px;
 }
+
+.node .field--type-image {
+  float: none !important;
+}

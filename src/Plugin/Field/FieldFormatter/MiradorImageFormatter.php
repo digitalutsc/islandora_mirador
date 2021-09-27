@@ -9,7 +9,6 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatterBase;
-use Drupal\islandora\IslandoraUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -50,13 +49,6 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
   protected $routeMatch;
 
   /**
-   * Islandora utility functions.
-   *
-   * @var \Drupal\islandora\IslandoraUtils
-   */
-  protected $utils;
-
-  /**
    * Constructs a StringFormatter instance.
    *
    * @param string $plugin_id
@@ -82,12 +74,11 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
    * @param \Drupal\islandora\IslandoraUtils $utils
    *   Islandora utils.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, ConfigFactoryInterface $config_factory, Token $token, RouteMatchInterface $route_match, IslandoraUtils $utils) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, ConfigFactoryInterface $config_factory, Token $token, RouteMatchInterface $route_match) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $config_factory);
     $this->token = $token;
     $this->routeMatch = $route_match;
     $this->configFactory = $config_factory;
-    $this->utils = $utils;
   }
 
   /**
@@ -104,8 +95,7 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
       $configuration['third_party_settings'],
       $container->get('config.factory'),
       $container->get('token'),
-      $container->get('current_route_match'),
-      $container->get('islandora.utils')
+      $container->get('current_route_match')
     );
   }
 
@@ -122,11 +112,9 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
     $iiif_url = $this->configFactory->get('islandora_mirador.settings')->get('iiif_manifest_url');
     $token_service = $this->token;
     foreach ($files as $file) {
-      $medias = $this->utils->getReferencingMedia($file->id());
-      $first_media = array_values($medias)[0];
-      $node = $first_media->get('field_media_of')->entity;
-      $id = 'mirador_' . $node->id();
-      $manifest_url = $token_service->replace($iiif_url, ['node' => $node]);
+      $media = $items->getEntity();
+      $id = 'mirador_' . $media->id();
+      $manifest_url = $token_service->replace($iiif_url, ['media' => $media]);
       $elements[] = [
         '#theme' => 'mirador',
         '#mirador_view_id' => $id,
