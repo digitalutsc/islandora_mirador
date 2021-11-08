@@ -71,8 +71,6 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
    *   The token service.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The route match.
-   * @param \Drupal\islandora\IslandoraUtils $utils
-   *   Islandora utils.
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, ConfigFactoryInterface $config_factory, Token $token, RouteMatchInterface $route_match) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $config_factory);
@@ -111,23 +109,21 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
     }
     $iiif_url = $this->configFactory->get('islandora_mirador.settings')->get('iiif_manifest_url');
     $token_service = $this->token;
-    foreach ($files as $file) {
-      $media = $items->getEntity();
-      $id = 'mirador_' . $media->id();
-      $manifest_url = $token_service->replace($iiif_url, ['media' => $media]);
-      $elements[] = [
-        '#theme' => 'mirador',
-        '#mirador_view_id' => $id,
-        '#iiif_manifest_url' => $manifest_url,
-        '#attached' => [
-          'drupalSettings' => [
-            'iiif_manifest_url' => $manifest_url,
-            'mirador_view_id' => $id,
-          ],
+    $media = $items->getEntity();
+    $id = 'mirador_' . $media->id();
+    $manifest_url = $token_service->replace($iiif_url, ['media' => $media]);
+    $elements[] = [
+      '#theme' => 'mirador',
+      '#mirador_view_id' => $id,
+      '#iiif_manifest_url' => $manifest_url,
+      '#attached' => [
+        'drupalSettings' => [
+          'iiif_manifest_url' => $manifest_url,
+          'mirador_view_id' => $id,
         ],
-        '#settings' => $settings,
-      ];
-    }
+      ],
+      '#settings' => $settings,
+    ];
     return $elements;
   }
 
