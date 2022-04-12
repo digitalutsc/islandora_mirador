@@ -21,7 +21,7 @@
     function init(context,settings){
         if (!initialized){
             initialized = true;
-            configs = {
+            var configs = {
                 "id": base,
                 "manifests": {
                     [settings.iiif_manifest_url]: {provider: "Islandora"}
