@@ -21,9 +21,21 @@
     function init(context,settings){
         if (!initialized){
             initialized = true;
+            configs = {
+                "id": base,
+                "manifests": {
+                    [settings.iiif_manifest_url]: {provider: "Islandora"}
+                },
+                "windows": [
+                    {
+                        "manifestId": settings.iiif_manifest_url,
+                        "thumbnailNavigationPosition": 'far-bottom'
+                    }
+                ]
+            };
             
+            /* If there is a JWT token was passed through, ineject it to the Mirador Viewer config */
             if (settings.token !== undefined) {
-                /* If there is a JWT token was passed through, ineject it to the Mirador Viewer config */
                 configs = {
                     "id": base,
                     "manifests": {
@@ -64,20 +76,7 @@
                     },
                 };
             }
-            else {
-               configs = {
-                    "id": base,
-                    "manifests": {
-                        [settings.iiif_manifest_url]: {provider: "Islandora"}
-                    },
-                    "windows": [
-                        {
-                            "manifestId": settings.iiif_manifest_url,
-                            "thumbnailNavigationPosition": 'far-bottom'
-                        }
-                    ]
-                }
-            }
+           
             
             var miradorInstance = Mirador.viewer(configs);
         }
