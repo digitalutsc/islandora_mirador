@@ -21,45 +21,65 @@
     function init(context,settings){
         if (!initialized){
             initialized = true;
-            var miradorInstance = Mirador.viewer({
-                "id": base,
-                "manifests": {
-                    [settings.iiif_manifest_url]: {provider: "Islandora"}
-                },
-                "windows": [
-                    {
-                        "manifestId": settings.iiif_manifest_url,
-                        "thumbnailNavigationPosition": 'far-bottom'
-                    }
-                ],
-                "resourceHeaders": {
-                    'Authorization': 'Bearer '+ settings.token,
-                    'token': settings.token
-                },
-                "requestPipeline": [
-                    (url, options) => ({  ...options, headers: {
-                            "Accept": 'application/ld+json;profile="http://iiif.io/api/presentation/3/context.json"',
-                            'Authorization': 'Bearer '+ settings.token,
-                            'token': settings.token
-                        }})
-                ],
-                "osdConfig": {
-                    "loadTilesWithAjax": true,
-                    "ajaxHeaders": {
+            
+            if (settings.token !== undefined) {
+                /* If there is a JWT token was passed through, ineject it to the Mirador Viewer config */
+                configs = {
+                    "id": base,
+                    "manifests": {
+                        [settings.iiif_manifest_url]: {provider: "Islandora"}
+                    },
+                    "windows": [
+                        {
+                            "manifestId": settings.iiif_manifest_url,
+                            "thumbnailNavigationPosition": 'far-bottom'
+                        }
+                    ],
+                    "resourceHeaders": {
                         'Authorization': 'Bearer '+ settings.token,
                         'token': settings.token
-                    }
-                },
-                requests: {
-                    preprocessors: [ // Functions that receive HTTP requests and manipulate them (e.g. to add headers)
-                        // rewrite all info.json requests to add the text/json request header
-                        (url, options) => (url.match('info.json') && { ...options, headers: {
+                    },
+                    "requestPipeline": [
+                        (url, options) => ({  ...options, headers: {
+                                "Accept": 'application/ld+json;profile="http://iiif.io/api/presentation/3/context.json"',
+                                'Authorization': 'Bearer '+ settings.token,
+                                'token': settings.token
+                            }})
+                    ],
+                    "osdConfig": {
+                        "loadTilesWithAjax": true,
+                        "ajaxHeaders": {
                             'Authorization': 'Bearer '+ settings.token,
                             'token': settings.token
-                        }})
-                    ],
-                },
-            });
+                        }
+                    },
+                    requests: {
+                        preprocessors: [ // Functions that receive HTTP requests and manipulate them (e.g. to add headers)
+                            // rewrite all info.json requests to add the text/json request header
+                            (url, options) => (url.match('info.json') && { ...options, headers: {
+                                'Authorization': 'Bearer '+ settings.token,
+                                'token': settings.token
+                            }})
+                        ],
+                    },
+                };
+            }
+            else {
+               configs = {
+                    "id": base,
+                    "manifests": {
+                        [settings.iiif_manifest_url]: {provider: "Islandora"}
+                    },
+                    "windows": [
+                        {
+                            "manifestId": settings.iiif_manifest_url,
+                            "thumbnailNavigationPosition": 'far-bottom'
+                        }
+                    ]
+                }
+            }
+            
+            var miradorInstance = Mirador.viewer(configs);
         }
     }
     Drupal.Mirador = Drupal.Mirador || {};
