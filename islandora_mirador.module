@@ -30,5 +30,8 @@ function template_preprocess_mirador(&$variables) {
   $variables['#attached']['drupalSettings']['mirador_view_id'] = $variables['mirador_view_id'];
 
   // for dsu-utsc
-  $variables['#attached']['drupalSettings']['token'] = \Drupal::service('jwt.authentication.jwt')->generateToken();
+  if (!empty(\Drupal::hasService('jwt.authentication.jwt'))) {
+    $variables['#attached']['drupalSettings']['token'] = \Drupal::service('jwt.authentication.jwt')->generateToken();
+  }
+  
 }
