@@ -9,7 +9,7 @@ mirador:
     https://unpkg.com/mirador@latest/dist/mirador.min.js:
       { type: external, minified: true }
 viewer:
-  version: 2.6.79.x
+  version: 1.x
   js:
     js/mirador_viewer.js: { preprocess: false }
   css:
