@@ -1,98 +1,95 @@
-/*jslint browser: true*/
-/*global Mirador, Drupal*/
+//import annotationPlugins from "mirador-annotations/src";
+//import SimpleAnnotationServerV2Adapter from "_dist/mirador-annotations/SimpleAnnotationServerV2Adapter";
+
 /**
  * @file
  * Displays Mirador viewer.
  */
 (function ($, Drupal) {
-    'use strict';
+  "use strict";
 
-    /**
-     * If initialized.
-     * @type {boolean}
-     */
-    var initialized;
-    /**
-     * Unique HTML id.
-     * @type {string}
-     */
-    var base;
+  /**
+   * If initialized.
+   * @type {boolean}
+   */
+  var initialized;
+  /**
+   * Unique HTML id.
+   * @type {string}
+   */
+  var base;
 
-    function init(context,settings){
-        if (!initialized){
-            initialized = true;
-            var configs = {
-                "id": base,
-                "manifests": {
-                    [settings.iiif_manifest_url]: {provider: "Islandora"}
-                },
-                "windows": [
-                    {
-                        "manifestId": settings.iiif_manifest_url,
-                        "thumbnailNavigationPosition": 'far-bottom'
-                    }
-                ]
-            };
-            
-            /* If there is a JWT token was passed through, ineject it to the Mirador Viewer config */
-            if (settings.token !== undefined) {
-                configs = {
-                    "id": base,
-                    "manifests": {
-                        [settings.iiif_manifest_url]: {provider: "Islandora"}
-                    },
-                    "windows": [
-                        {
-                            "manifestId": settings.iiif_manifest_url,
-                            "thumbnailNavigationPosition": 'far-bottom'
-                        }
-                    ],
-                    "resourceHeaders": {
-                        'Authorization': 'Bearer '+ settings.token,
-                        'token': settings.token
-                    },
-                    "requestPipeline": [
-                        (url, options) => ({  ...options, headers: {
-                                "Accept": 'application/ld+json;profile="http://iiif.io/api/presentation/3/context.json"',
-                                'Authorization': 'Bearer '+ settings.token,
-                                'token': settings.token
-                            }})
-                    ],
-                    "osdConfig": {
-                        "loadTilesWithAjax": true,
-                        "ajaxHeaders": {
-                            'Authorization': 'Bearer '+ settings.token,
-                            'token': settings.token
-                        }
-                    },
-                    requests: {
-                        preprocessors: [ // Functions that receive HTTP requests and manipulate them (e.g. to add headers)
-                            // rewrite all info.json requests to add the text/json request header
-                            (url, options) => (url.match('info.json') && { ...options, headers: {
-                                'Authorization': 'Bearer '+ settings.token,
-                                'token': settings.token
-                            }})
-                        ],
-                    },
-                };
-            }
-           
-            
-            var miradorInstance = Mirador.viewer(configs);
-        }
-    }
-    Drupal.Mirador = Drupal.Mirador || {};
-
-    /**
-     * Initialize the Mirador Viewer.
-     */
-    Drupal.behaviors.Mirador = {
-        attach: function (context, settings) {
-            base = settings.mirador_view_id;
-            init(context,settings);
+  function init(context, settings) {
+    /*
+      function loadScript(url, callback) {
+        // Adding the script tag to the head as suggested before
+        var head = document.head;
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = url;
+  
+        // Then bind the event to the callback function.
+        // There are several events for cross browser compatibility.
+        script.onreadystatechange = callback;
+        script.onload = callback;
+  
+        // Fire the loading
+        head.appendChild(script);
+      }
+      */
+    //loadScript(javascriptURL, function (javascriptURL) {
+    if (!initialized) {
+      initialized = true;
+      const endpointUrl = "http://localhost:8888/annotation";
+      const config = {
+        annotation: {
+          adapter: (canvasId) =>
+            new SimpleAnnotationServerV2Adapter(canvasId, endpointUrl),
         },
-        detach: function () {
-        }
-    };
 
+        id: base,
+        manifests: {
+          [settings.iiif_manifest_url]: { provider: "Islandora" },
+        },
+        windows: [
+          {
+            loadedManifest: settings.iiif_manifest_url,
+            thumbnailNavigationPosition: "far-right",
+          },
+        ],
+        window: {
+          allowClose: false,
+          allowMaximize: false,
+          allowFullscreen: true, // Configure to show a "fullscreen" button in the WindowTopBar
+          //defaultSideBarPanel: "annotations",
+          defaultSideBarPanel: "search",
+          sideBarOpenByDefault: true,
+          annotationLayer: true,
+          panels: {
+            // Configure which panels are visible in WindowSideBarButtons
+            info: true,
+            attribution: true,
+            canvas: true,
+            annotations: true,
+            search: true,
+          },
+        },
+      };
+      //var miradorInstance = Mirador.viewer(config, [...annotationPlugins]);
+      var miradorInstance = Mirador.viewer(config);
+    }
+    //});
+  }
+  Drupal.Mirador = Drupal.Mirador || {};
+
+  /**
+   * Initialize the Mirador Viewer.
+   */
+  Drupal.behaviors.Mirador = {
+    attach: function (context, settings) {
+      base = settings.mirador_view_id;
+      init(context, settings);
+    },
+    detach: function () {},
+  };
 })(jQuery, Drupal);

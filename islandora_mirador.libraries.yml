@@ -6,11 +6,12 @@ mirador:
     url: https://github.com/ProjectMirador/mirador/blob/master/LICENSE
     gpl-compatible: true
   js:
-    https://unpkg.com/mirador@latest/dist/mirador.min.js: { type: external, minified: true}
+    https://unpkg.com/mirador@latest/dist/mirador.min.js:
+      { type: external, minified: true }
 viewer:
-  version: 1.x
+  version: 2.6.79.x
   js:
-    js/mirador_viewer.js: {preprocess: false}
+    js/mirador_viewer.js: { preprocess: false }
   css:
     theme:
       css/mirador.css: {}
