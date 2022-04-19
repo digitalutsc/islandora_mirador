@@ -21,7 +21,20 @@
     function init(context,settings){
         if (!initialized){
             initialized = true;
+            //const endpointUrl = "http://localhost:8888/annotation";
+            const endpointUrl = settings.annotation_endpoint;
+            //get the plugin
+            let plugins = [];
+            if (window.miradorPlugins && window.miradorPlugins.length) {
+                for (let { name, plugin } of window.miradorPlugins) {
+                plugins = [...plugins, ...plugin];
+                }
+            }
             var configs = {
+              "annotation": {
+                adapter: (canvasId) =>
+                  window.miradorAnnotationServerAdapter(canvasId, endpointUrl),
+              },
                 "id": base,
                 "manifests": {
                     [settings.iiif_manifest_url]: {provider: "Islandora"}
@@ -31,12 +44,32 @@
                         "manifestId": settings.iiif_manifest_url,
                         "thumbnailNavigationPosition": 'far-bottom'
                     }
-                ]
+                ],
+                "window": {
+                    "allowClose": false,
+                    "allowMaximize": false,
+                    "allowFullscreen": true, // Configure to show a "fullscreen" button in the WindowTopBar
+                    "defaultSideBarPanel": "search",
+                    "sideBarOpenByDefault": true,
+                    "annotationLayer": true,
+                    "panels": {
+                      // Configure which panels are visible in WindowSideBarButtons
+                      "info": true,
+                      "attribution": true,
+                      "canvas": true,
+                      'annotations': true,
+                      "search": true,
+                    },
+                },
             };
             
             /* If there is a JWT token was passed through, ineject it to the Mirador Viewer config */
             if (settings.token !== undefined) {
                 configs = {
+                  "annotation": {
+                    adapter: (canvasId) =>
+                      window.miradorAnnotationServerAdapter(canvasId, endpointUrl),
+                  },
                     "id": base,
                     "manifests": {
                         [settings.iiif_manifest_url]: {provider: "Islandora"}
@@ -47,6 +80,22 @@
                             "thumbnailNavigationPosition": 'far-bottom'
                         }
                     ],
+                    "window": {
+                        "allowClose": false,
+                        "allowMaximize": false,
+                        "allowFullscreen": true, // Configure to show a "fullscreen" button in the WindowTopBar
+                        "defaultSideBarPanel": "search",
+                        "sideBarOpenByDefault": true,
+                        "annotationLayer": true,
+                        "panels": {
+                          // Configure which panels are visible in WindowSideBarButtons
+                          "info": true,
+                          "attribution": true,
+                          "canvas": true,
+                          'annotations': true,
+                          "search": true,
+                        },
+                    },
                     "resourceHeaders": {
                         'Authorization': 'Bearer '+ settings.token,
                         'token': settings.token
@@ -78,7 +127,11 @@
             }
            
             
-            var miradorInstance = Mirador.viewer(configs);
+            if (endpointUrl != null && endpointUrl.length) {
+                var miradorInstance = Mirador.viewer(configs, plugins);
+            } else {
+                var miradorInstance = Mirador.viewer(configs);
+            }
         }
     }
     Drupal.Mirador = Drupal.Mirador || {};

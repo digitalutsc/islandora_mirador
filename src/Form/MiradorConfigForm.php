@@ -42,6 +42,12 @@ class MiradorConfigForm extends ConfigFormBase {
       '#global_types' => FALSE,
       '#token_types' => ['media'],
     ];
+    $form['annotation_endpoint'] = [
+      '#type' => 'url',
+      '#title' => $this->t('search API url'),
+      '#description' => $this->t('Base URL for Simple Annotation Server endpoints. (e.g. "http://localhost:8888/annotation")'),
+      '#default_value' => $config->get('annotation_endpoint'),
+    ];
 
     return $form;
   }
@@ -52,6 +58,7 @@ class MiradorConfigForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('islandora_mirador.settings');
     $config->set('iiif_manifest_url', $form_state->getValue('iiif_manifest_url'));
+    $config->set('annotation_endpoint', $form_state->getValue('annotation_endpoint'));
     $config->save();
     parent::submitForm($form, $form_state);
   }
