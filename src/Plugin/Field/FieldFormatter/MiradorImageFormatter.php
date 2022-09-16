@@ -120,6 +120,7 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
         'drupalSettings' => [
           'iiif_manifest_url' => $manifest_url,
           'mirador_view_id' => $id,
+          'default_thumbnail' => false
         ],
       ],
       '#settings' => $settings,

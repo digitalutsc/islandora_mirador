@@ -21,6 +21,7 @@
     function init(context,settings){
         if (!initialized){
             initialized = true;
+
             var configs = {
                 "id": base,
                 "manifests": {
@@ -29,9 +30,9 @@
                 "windows": [
                     {
                         "manifestId": settings.iiif_manifest_url,
-                        "thumbnailNavigationPosition": 'far-bottom'
+                        "thumbnailNavigationPosition": settings.default_thumbnail
                     }
-                ]
+                ],
             };
             
             /* If there is a JWT token was passed through, ineject it to the Mirador Viewer config */
@@ -44,7 +45,7 @@
                     "windows": [
                         {
                             "manifestId": settings.iiif_manifest_url,
-                            "thumbnailNavigationPosition": 'far-bottom'
+                            "thumbnailNavigationPosition": settings.default_thumbnail
                         }
                     ],
                     "resourceHeaders": {
