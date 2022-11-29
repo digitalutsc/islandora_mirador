@@ -96,8 +96,7 @@
 	i(i.s = 1048)
 }([function(e, t, n) {
 	"use strict";
-	e.exports = n(708);
-
+	e.exports = n(708)
 }, function(e, t, n) {
 	"use strict";
 
@@ -16018,7 +16017,6 @@
 			}
 		}]) && y(t.prototype, n), r && y(t, r), o
 	}(c.Component);
-
 	E.defaultProps = {
 		children: null,
 		classes: {},
@@ -32192,7 +32190,7 @@
 							var n = f(e),
 								r = e.charCode,
 								i = r >= 32 ? String.fromCharCode(r) : n.length > 1 ? "" : n;
-							n !== t && (n = i.toLowerCase()), d(!0, n, i, e), t = null;
+							n !== t && (n = i.toLowerCase()), d(!0, n, i, e), t = null
 						}
 					},
 					keyup: function(e) {
@@ -41174,15 +41172,11 @@
 						i = t.searchService,
 						o = t.windowId,
 						a = this.state.search;
-                    // Kyle added
-					e && e.preventDefault(), a && r(o, n, "".concat(i.id.replace('http://','https://'), "?q=").concat(a), a);
+					e && e.preventDefault(), a && r(o, n, "".concat(i.id, "?q=").concat(a), a)
 				}
 			}, {
 				key: "selectItem",
 				value: function(e, t, n) {
-                    console.log("Select item ");
-                    console.log(t);
-                    console.log(n);
 					t && ji(t) && this.setState({
 						search: ji(t)
 					}, this.submitSearch)
@@ -41190,7 +41184,7 @@
 			}, {
 				key: "render",
 				value: function() {
-                    var e = this.props,
+					var e = this.props,
 						t = e.classes,
 						n = e.companionWindowId,
 						r = e.searchIsFetching,
@@ -41200,22 +41194,11 @@
 						s = a.search,
 						u = a.suggestions,
 						c = "search-".concat(n);
-
-                    // Kyle added: capture query string if there is one
-                    const queryString = window.location.search;
-                    const urlParams = new URLSearchParams(queryString);
-                    var search_key = "";
-                    if (urlParams.get('q') !== null) {
-                        search_key = urlParams.get('q');
-                    }
-
 					return l.a.createElement(l.a.Fragment, null, l.a.createElement("form", {
-						id: t.form,
-                        onSubmit: this.submitSearch,
+						onSubmit: this.submitSearch,
 						className: t.form
 					}, l.a.createElement(ti, {
 						id: c,
-                        value: search_key, // Kyle added
 						inputValue: s,
 						options: u,
 						getOptionLabel: ji,
@@ -41227,13 +41210,12 @@
 						onInputChange: this.handleChange,
 						freeSolo: !0,
 						renderInput: function(e) {
-                            return l.a.createElement(ri.a, Object.assign({}, e, {
+							return l.a.createElement(ri.a, Object.assign({}, e, {
 								label: i("searchInputLabel"),
 								InputProps: wi(wi({}, e.InputProps), {}, {
 									endAdornment: l.a.createElement("div", {
 										className: t.endAdornment
 									}, l.a.createElement(ve.a, {
-                                        id: "searchSubmitButton",
 										"aria-label": i("searchSubmitAria"),
 										type: "submit"
 									}, l.a.createElement(oi.a, null)), Boolean(r) && l.a.createElement(ni.a, {
@@ -107929,7 +107911,7 @@
 				case 4:
 					return t.abrupt("break", 12);
 				case 7:
-					t.prev = 7, t.t0 = t.catch(1);
+					t.prev = 7, t.t0 = t.catch(1), console.log(t.t0);
 				case 10:
 					t.next = 0;
 					break;
@@ -108548,6 +108530,7 @@
 	var zs = Za()(ms()((function(e) {
 			var t, n, r = e.breakpoints,
 				i = e.palette;
+			console.log(i);
 			var o = i.shades.main,
 				a = i.getContrastText(o),
 				s = "1px solid " + Object(gs.fade)(a, .2),

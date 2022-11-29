@@ -125,8 +125,6 @@
                     },
                 };
             }
-           
-            
             if (endpointUrl != null && endpointUrl.length) {
                 var miradorInstance = Mirador.viewer(configs, plugins);
             } else {
@@ -143,6 +141,22 @@
         attach: function (context, settings) {
             base = settings.mirador_view_id;
             init(context,settings);
+
+            var watcher = setInterval(function(){
+                if (jQuery("#searchSubmitButton").length > 0) {
+                    const queryString = window.location.search;
+                    const urlParams = new URLSearchParams(queryString);
+                    var search_key = "";
+                    if (urlParams.get('q') !== null) {
+                        search_key = urlParams.get('q');
+                        jQuery("#searchSubmitButton").trigger( "click" );
+                        clearInterval(watcher);
+                    }
+                }
+            },1000);
+
+
+
         },
         detach: function () {
         }
