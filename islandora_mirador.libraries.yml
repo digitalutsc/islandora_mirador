@@ -9,6 +9,8 @@ mirador:
     js/dist/5.main.js: {}
     js/dist/6.main.js: {}
     js/dist/7.main.js: {}
+  dependencies:
+    - core/drupalSettings
 viewer:
   version: 1.0.x
   js:

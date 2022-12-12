@@ -1,4 +1,17 @@
 ! function(e) {
+    /**/
+    var userUID = -1;
+    Drupal.behaviors.ifCE = { //the name of our behavior
+        attach: function (context, settings) {
+             console.log("gooing here");
+             userUID= settings.user.uid;
+             console.log(userUID);
+            if (userUID == 1) {
+                var body = document.body;
+                body.classList.add("admin-logged-in");
+            }
+        }
+    }
 	function t(t) {
 		for (var n, i, o = t[0], a = t[1], s = 0, c = []; s < o.length; s++) i = o[s], Object.prototype.hasOwnProperty.call(r, i) && r[i] && c.push(r[i][0]), r[i] = 0;
 		for (n in a) Object.prototype.hasOwnProperty.call(a, n) && (e[n] = a[n]);
@@ -41175,6 +41188,7 @@
 						o = t.windowId,
 						a = this.state.search;
                     // Kyle added
+                    console.log(i.id);
 					e && e.preventDefault(), a && r(o, n, "".concat(i.id.replace('http://','https://'), "?q=").concat(a), a);
 				}
 			}, {
@@ -76404,35 +76418,44 @@
 		n = e, (t = c).prototype = Object.create(n.prototype), t.prototype.constructor = t, t.__proto__ = n;
 		var l = c.prototype;
 		return l.handleDelete = function() {
-			var e = this.context,
-				t = e.canvases,
-				n = e.receiveAnnotation,
-				r = e.storageAdapter,
-				i = this.props.annotationid;
-			t.forEach((function(e) {
-				var t = r(e.id);
-				t.delete(i).then((function(r) {
-					n(e.id, t.annotationPageId, r)
-				}))
-			}))
+            // TODO: determine login user is administrtaor, right now is hard code user id
+            var body = document.body;
+            if(body.classList.contains("admin-logged-in")) {
+                var e = this.context,
+                    t = e.canvases,
+                    n = e.receiveAnnotation,
+                    r = e.storageAdapter,
+                    i = this.props.annotationid;
+                t.forEach((function(e) {
+                    var t = r(e.id);
+                    t.delete(i).then((function(r) {
+                        n(e.id, t.annotationPageId, r)
+                    }))
+                }));
+            }
 		}, l.handleEdit = function() {
-			var e, t = this.context,
-				n = t.addCompanionWindow,
-				r = t.canvases,
-				i = t.annotationsOnCanvases,
-				o = this.props.annotationid;
-			r.some((function(t) {
-				return i[t.id] && Object.entries(i[t.id]).forEach((function(t, n) {
-					t[0];
-					var r = t[1];
-					r.json && r.json.items && (e = r.json.items.find((function(e) {
-						return e.id === o
-					})))
-				})), e
-			})), n("annotationCreation", {
-				annotationid: o,
-				position: "right"
-			})
+            // TODO: determine login user is administrtaor, right now is hard code user id
+            var body = document.body;
+            if(body.classList.contains("admin-logged-in")) {
+                var e, t = this.context,
+                    n = t.addCompanionWindow,
+                    r = t.canvases,
+                    i = t.annotationsOnCanvases,
+                    o = this.props.annotationid;
+                r.some((function(t) {
+                    return i[t.id] && Object.entries(i[t.id]).forEach((function(t, n) {
+                        t[0];
+                        var r = t[1];
+                        r.json && r.json.items && (e = r.json.items.find((function(e) {
+                            return e.id === o
+                        })))
+                    })), e
+                })), n("annotationCreation", {
+                    annotationid: o,
+                    position: "right"
+                });
+            }
+
 		}, l.handleMouseHover = function() {
 			this.setState((function(e) {
 				return {
@@ -76457,31 +76480,56 @@
 		}, l.render = function() {
 			var e = this.props.children,
 				t = this.state.isHovering;
-			return r.default.createElement("div", {
-				onMouseEnter: this.handleMouseHover,
-				onMouseLeave: this.handleMouseHover
-			}, t && this.editable() && r.default.createElement("div", {
-				style: {
-					position: "relative",
-					top: -20,
-					zIndex: 1e4
-				}
-			}, r.default.createElement(s.default, {
-				"aria-label": "annotation tools",
-				size: "small",
-				style: {
-					position: "absolute",
-					right: 0
-				}
-			}, r.default.createElement(a.default, {
-				"aria-label": "Edit",
-				onClick: this.handleEdit,
-				value: "edit"
-			}, r.default.createElement(o.default, null)), r.default.createElement(a.default, {
-				"aria-label": "Delete",
-				onClick: this.handleDelete,
-				value: "delete"
-			}, r.default.createElement(i.default, null)))), r.default.createElement("li", this.props, e))
+
+            var body = document.body;
+            if(body.classList.contains("admin-logged-in")) {
+                return r.default.createElement("div", {
+                    onMouseEnter: this.handleMouseHover,
+                    onMouseLeave: this.handleMouseHover
+                }, t && this.editable() && r.default.createElement("div", {
+                    style: {
+                        position: "relative",
+                        top: -20,
+                        zIndex: 1e4
+                    }
+                }, r.default.createElement(s.default, {
+                    "aria-label": "annotation tools",
+                    size: "small",
+                    style: {
+                        position: "absolute",
+                        right: 0
+                    }
+                }, r.default.createElement(a.default, {
+                    "aria-label": "Edit",
+                    onClick: this.handleEdit,
+                    value: "edit"
+                }, r.default.createElement(o.default, null)), r.default.createElement(a.default, {
+                    "aria-label": "Delete",
+                    onClick: this.handleDelete,
+                    value: "delete"
+                }, r.default.createElement(i.default, null)))), r.default.createElement("li", this.props, e))
+            }
+            else {
+                return r.default.createElement("div", {
+                    onMouseEnter: this.handleMouseHover,
+                    onMouseLeave: this.handleMouseHover
+                }, t && this.editable() && r.default.createElement("div", {
+                    style: {
+                        position: "relative",
+                        top: -20,
+                        zIndex: 1e4
+                    }
+                }, r.default.createElement(s.default, {
+                    "aria-label": "annotation tools",
+                    size: "small",
+                    style: {
+                        position: "absolute",
+                        right: 0
+                    }
+                })), r.default.createElement("li", this.props, e))
+            }
+
+
 		}, c
 	}(r.Component);
 	p.propTypes = {}, p.contextType = c.default;

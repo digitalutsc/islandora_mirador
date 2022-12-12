@@ -95,7 +95,7 @@ class MiradorBlock extends BlockBase implements ContainerFactoryPluginInterface 
       '#description' => $this->t('Base URL for Simple Annotation Server endpoints. (e.g. "http://localhost:8888/annotation")'),
       '#default_value' => $this->configuration['annotation_endpoint'],
     ];
-    drupal_log($this->configuration['annotation_endpoint']);
+    //drupal_log($this->configuration['annotation_endpoint']);
     return $form;
   }
 
@@ -130,6 +130,7 @@ class MiradorBlock extends BlockBase implements ContainerFactoryPluginInterface 
           'iiif_manifest_url' => $manifest_url,
           'mirador_view_id' => $id,
           'annotation_endpoint' => $annotation_endpoint,
+          'default_thumbnail' => "far-bottom"
         ],
       ],
     ];

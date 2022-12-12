@@ -42,7 +42,7 @@
                 "windows": [
                     {
                         "manifestId": settings.iiif_manifest_url,
-                        "thumbnailNavigationPosition": 'far-bottom'
+                        "thumbnailNavigationPosition": settings.default_thumbnail
                     }
                 ],
                 "window": {
@@ -125,6 +125,7 @@
                     },
                 };
             }
+
             if (endpointUrl != null && endpointUrl.length) {
                 var miradorInstance = Mirador.viewer(configs, plugins);
             } else {
