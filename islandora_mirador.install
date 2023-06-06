@@ -18,7 +18,7 @@ function islandora_mirador_install() {
  * Implements hook_update().
  */
 function islandora_mirador_update_8001() {
-  _get_or_create_tag();
+  //_get_or_create_tag();
 }
 
 /**
