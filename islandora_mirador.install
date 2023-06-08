@@ -18,7 +18,7 @@ function islandora_mirador_install() {
  * Implements hook_update().
  */
 function islandora_mirador_update_8001() {
-  //_get_or_create_tag();
+  // _get_or_create_tag();
 }
 
 /**
@@ -26,9 +26,9 @@ function islandora_mirador_update_8001() {
  */
 function _get_or_create_tag() {
   $term_name = 'Mirador';
-  $test_terms = taxonomy_term_load_multiple_by_name($term_name);
+  $test_terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name]);
   if (!$test_terms) {
-    $term = Term::create([
+    Term::create([
       'parent' => [],
       'name' => $term_name,
       'vid' => 'islandora_display',

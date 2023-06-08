@@ -10,6 +10,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatterBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 
 /**
  * Mirador FieldFormatter plugin.
@@ -73,7 +74,7 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
    *   The route match.
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, ConfigFactoryInterface $config_factory, Token $token, RouteMatchInterface $route_match) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $config_factory);
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
     $this->token = $token;
     $this->routeMatch = $route_match;
     $this->configFactory = $config_factory;
@@ -103,7 +104,9 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
     $settings = $this->getSettings();
-    $files = $this->getEntitiesToView($items, $langcode);
+    if ($items instanceof EntityReferenceFieldItemListInterface) {
+      $files = $this->getEntitiesToView($items, $langcode);
+    }
     if (empty($files)) {
       return $elements;
     }
@@ -120,7 +123,7 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
         'drupalSettings' => [
           'iiif_manifest_url' => $manifest_url,
           'mirador_view_id' => $id,
-          'default_thumbnail' => false
+          'default_thumbnail' => FALSE,
         ],
       ],
       '#settings' => $settings,

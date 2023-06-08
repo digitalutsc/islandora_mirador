@@ -119,7 +119,7 @@ class MiradorBlock extends BlockBase implements ContainerFactoryPluginInterface 
         'drupalSettings' => [
           'iiif_manifest_url' => $manifest_url,
           'mirador_view_id' => $id,
-          'default_thumbnail' => "far-bottom"
+          'default_thumbnail' => "far-bottom",
         ],
       ],
     ];
