@@ -76,6 +76,21 @@
                         ],
                     },
                 };
+
+                if ('serviceWorker' in navigator) {
+                    // The Mirador viewer uses img tags for thumbnails so thumbnail image requests
+                    // do not have authorization or token headers. Attach them using a service worker.
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker
+                            .register('/islandora_mirador_service_worker?token=' + settings.token, { scope: '/' })
+                            .then(registration => {
+                                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                            })
+                            .catch(err => {
+                                console.log('ServiceWorker registration failed: ', err);
+                            });
+                    });
+                }
             }
            
             
