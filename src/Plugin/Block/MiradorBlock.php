@@ -89,7 +89,13 @@ class MiradorBlock extends BlockBase implements ContainerFactoryPluginInterface 
       '#global_types' => FALSE,
       '#token_types' => ['node'],
     ];
-
+    $form['annotation_endpoint'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Annotation Endpoint'),
+      '#description' => $this->t('Base URL for Simple Annotation Server endpoints. (e.g. "http://localhost:8888/annotation")'),
+      '#default_value' => $this->configuration['annotation_endpoint'],
+    ];
+    //drupal_log($this->configuration['annotation_endpoint']);
     return $form;
   }
 
@@ -100,6 +106,9 @@ class MiradorBlock extends BlockBase implements ContainerFactoryPluginInterface 
     $this->configuration['iiif_manifest_url'] = $form_state->getValue(
       ['iiif_manifest_url_fieldset', 'iiif_manifest_url']
     );
+    $this->configuration['annotation_endpoint'] = $form_state->getValue(
+      ['annotation_endpoint']
+    );
   }
 
   /**
@@ -109,6 +118,7 @@ class MiradorBlock extends BlockBase implements ContainerFactoryPluginInterface 
     $node = $this->routeMatch->getParameter('node');
     $manifest_url = $this->token->replace($this->configuration['iiif_manifest_url'], ['node' => $node]);
     $id = 'mirador_' . $node->id();
+    $annotation_endpoint = $this->configuration['annotation_endpoint'];
     $build = [
       "#title" => $this->t('Mirador Viewer'),
       "#description" => $this->t("A div for mirador viewer"),
@@ -119,7 +129,8 @@ class MiradorBlock extends BlockBase implements ContainerFactoryPluginInterface 
         'drupalSettings' => [
           'iiif_manifest_url' => $manifest_url,
           'mirador_view_id' => $id,
-          'default_thumbnail' => "far-bottom",
+          'annotation_endpoint' => $annotation_endpoint,
+          'default_thumbnail' => "far-bottom"
         ],
       ],
     ];
